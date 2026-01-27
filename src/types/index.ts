@@ -31,10 +31,10 @@ export interface Hotspot {
 export interface FilterCriteria {
   dateFrom?: Date;
   dateTo?: Date;
-  crimeTypes: string[];
-  areas: string[];
-  zones: string[];
-  policeStations: string[];
+  crimeTypes?: string[];
+  areas?: string[];
+  zones?: string[];
+  policeStations?: string[];
   severity?: 'low' | 'medium' | 'high';
 }
 

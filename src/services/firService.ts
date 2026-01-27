@@ -126,26 +126,30 @@ class FIRService {
     }
 
     // Filter by crime types
-    if (criteria.crimeTypes.length > 0) {
+    if (criteria.crimeTypes && criteria.crimeTypes.length > 0) {
+      const crimeTypes = criteria.crimeTypes;
       results = results.filter((fir) =>
-        criteria.crimeTypes.includes(fir.crimeType)
+        crimeTypes.includes(fir.crimeType)
       );
     }
 
     // Filter by areas
-    if (criteria.areas.length > 0) {
-      results = results.filter((fir) => criteria.areas.includes(fir.area));
+    if (criteria.areas && criteria.areas.length > 0) {
+      const areas = criteria.areas;
+      results = results.filter((fir) => areas.includes(fir.area));
     }
 
     // Filter by zones
-    if (criteria.zones.length > 0) {
-      results = results.filter((fir) => criteria.zones.includes(fir.zone));
+    if (criteria.zones && criteria.zones.length > 0) {
+      const zones = criteria.zones;
+      results = results.filter((fir) => zones.includes(fir.zone));
     }
 
     // Filter by police stations
-    if (criteria.policeStations.length > 0) {
+    if (criteria.policeStations && criteria.policeStations.length > 0) {
+      const policeStations = criteria.policeStations;
       results = results.filter((fir) =>
-        criteria.policeStations.includes(fir.policeStation)
+        policeStations.includes(fir.policeStation)
       );
     }
 

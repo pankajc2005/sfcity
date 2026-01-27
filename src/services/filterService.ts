@@ -32,25 +32,29 @@ class FilterService {
 
     // Crime type filtering
     if (criteria.crimeTypes && criteria.crimeTypes.length > 0) {
+      const crimeTypes = criteria.crimeTypes;
       results = results.filter((fir) =>
-        criteria.crimeTypes.includes(fir.crimeType)
+        crimeTypes.includes(fir.crimeType)
       );
     }
 
     // Area filtering
     if (criteria.areas && criteria.areas.length > 0) {
-      results = results.filter((fir) => criteria.areas.includes(fir.area));
+      const areas = criteria.areas;
+      results = results.filter((fir) => areas.includes(fir.area));
     }
 
     // Zone filtering
     if (criteria.zones && criteria.zones.length > 0) {
-      results = results.filter((fir) => criteria.zones.includes(fir.zone));
+      const zones = criteria.zones;
+      results = results.filter((fir) => zones.includes(fir.zone));
     }
 
     // Police station filtering
     if (criteria.policeStations && criteria.policeStations.length > 0) {
+      const policeStations = criteria.policeStations;
       results = results.filter((fir) =>
-        criteria.policeStations.includes(fir.policeStation)
+        policeStations.includes(fir.policeStation)
       );
     }
 
@@ -161,24 +165,29 @@ class FilterService {
 
   /**
    * Gets filter options for UI dropdowns
+   * Optional FIRs parameter - if not provided, fetches from firService
    */
-  getFilterOptions(firs: FIR[]): {
+  getFilterOptions(firs?: FIR[]): {
     crimeTypes: string[];
     areas: string[];
     zones: string[];
     policeStations: string[];
     dateRange: { earliest: Date; latest: Date } | null;
   } {
-    const crimeTypes = this.getUniqueValues(firs, 'crimeType') as string[];
-    const areas = this.getUniqueValues(firs, 'area') as string[];
-    const zones = this.getUniqueValues(firs, 'zone') as string[];
-    const policeStations = this.getUniqueValues(firs, 'policeStation') as string[];
+    // Import firService locally to avoid circular dependency
+    const { firService } = require('./firService');
+    const data = firs || firService.getAll();
+
+    const crimeTypes = this.getUniqueValues(data, 'crimeType') as string[];
+    const areas = this.getUniqueValues(data, 'area') as string[];
+    const zones = this.getUniqueValues(data, 'zone') as string[];
+    const policeStations = this.getUniqueValues(data, 'policeStation') as string[];
 
     let dateRange = null;
-    if (firs.length > 0) {
-      const dates = firs.map((f) => f.date);
-      const earliest = new Date(Math.min(...dates.map((d) => d.getTime())));
-      const latest = new Date(Math.max(...dates.map((d) => d.getTime())));
+    if (data.length > 0) {
+      const dates = data.map((f: FIR) => f.date);
+      const earliest = new Date(Math.min(...dates.map((d: Date) => d.getTime())));
+      const latest = new Date(Math.max(...dates.map((d: Date) => d.getTime())));
       dateRange = { earliest, latest };
     }
 
@@ -186,15 +195,10 @@ class FilterService {
   }
 
   /**
-   * Resets all filters to default (empty/null)
+   * Resets all filters to default (empty)
    */
   resetFilters(): FilterCriteria {
-    return {
-      crimeTypes: [],
-      areas: [],
-      zones: [],
-      policeStations: [],
-    };
+    return {};
   }
 
   /**
