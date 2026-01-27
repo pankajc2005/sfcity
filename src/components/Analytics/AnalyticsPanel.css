@@ -1,0 +1,221 @@
+/**
+ * AnalyticsPanel Component Styles
+ * Data visualization dashboard with Recharts integration
+ */
+
+.analytics-panel {
+  background-color: var(--surface-color);
+  border-radius: 4px;
+  padding: 2rem;
+  box-shadow: var(--shadow);
+}
+
+.analytics-panel h2 {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  color: var(--primary-color);
+  border-bottom: 3px solid var(--primary-color);
+  padding-bottom: 1rem;
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.chart-container {
+  background: linear-gradient(135deg, #f9f9f9 0%, #f5f5f5 100%);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.chart-container:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.chart-container h3 {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.chart-insight {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background-color: rgba(26, 35, 126, 0.05);
+  border-left: 3px solid var(--primary-color);
+  border-radius: 2px;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.chart-insight strong {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+/* Recharts customization */
+.analytics-panel :global(.recharts-text) {
+  font-size: 12px;
+}
+
+.analytics-panel :global(.recharts-cartesian-axis-tick-value) {
+  fill: var(--text-secondary);
+  font-size: 12px;
+}
+
+.analytics-panel :global(.recharts-tooltip-wrapper) {
+  outline: none;
+}
+
+.analytics-panel :global(.recharts-tooltip) {
+  border-radius: 4px;
+}
+
+.analytics-panel :global(.recharts-legend-wrapper) {
+  padding: 1rem 0 0 0 !important;
+}
+
+/* Analytics Summary */
+.analytics-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+  padding: 2rem;
+  background: linear-gradient(135deg, #f5f5f5 0%, #eeeeee 100%);
+  border-radius: 4px;
+  border-top: 3px solid var(--primary-color);
+}
+
+.summary-card {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 4px;
+  text-align: center;
+  border-left: 4px solid var(--primary-color);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.summary-card h4 {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.summary-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin: 0;
+}
+
+/* Insights & Recommendations Box */
+.insights-box {
+  background: linear-gradient(135deg, #f0f7ff 0%, #e8f1ff 100%);
+  border: 2px solid var(--primary-light);
+  border-radius: 4px;
+  padding: 2rem;
+  margin-top: 2rem;
+}
+
+.insights-box h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  color: var(--primary-color);
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 0.75rem;
+}
+
+.insight-section {
+  margin-bottom: 1.5rem;
+}
+
+.insight-section h4 {
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+  color: var(--primary-dark);
+  font-weight: 600;
+}
+
+.insight-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.insight-section li {
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  background-color: white;
+  border-left: 3px solid var(--warning-color);
+  border-radius: 2px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.insight-section li strong {
+  color: var(--danger-color);
+  font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .analytics-panel {
+    padding: 1rem;
+  }
+
+  .charts-grid {
+    gap: 1rem;
+  }
+
+  .chart-container {
+    padding: 1rem;
+  }
+
+  .analytics-summary {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .summary-value {
+    font-size: 1.5rem;
+  }
+
+  .insights-box {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .analytics-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .insight-section li {
+    font-size: 0.85rem;
+    padding: 0.5rem;
+  }
+}

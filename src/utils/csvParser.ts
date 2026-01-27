@@ -121,7 +121,7 @@ function parseCSVRow(row: string): string[] {
 function parseFIRRecord(
   values: string[],
   headers: string[],
-  rowNumber: number
+  _rowNumber: number
 ): FIR {
   const data: Record<string, string> = {};
 

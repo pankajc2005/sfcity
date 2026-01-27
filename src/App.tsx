@@ -6,6 +6,9 @@ import { hotspotService } from './services/hotspotService';
 import { insightService } from './services/insightService';
 import { parseCSV } from './utils/csvParser';
 import { validateFIRBatch } from './utils/validation';
+import { CrimeMap } from './components/Map/CrimeMap';
+import { AnalyticsPanel } from './components/Analytics/AnalyticsPanel';
+import FilterPanel from './components/Filters/FilterPanel';
 
 interface AppState {
   allFIRs: FIR[];
@@ -38,6 +41,8 @@ export const App: React.FC = () => {
     loading: false,
     error: null,
   });
+
+  const [selectedFIR, setSelectedFIR] = useState<FIR | undefined>(undefined);
 
   // Initialize with preloaded data on mount
   useEffect(() => {
@@ -312,6 +317,51 @@ export const App: React.FC = () => {
             <button onClick={handleExportCSV}>Export CSV</button>
           </div>
         </section>
+
+        {/* Advanced Filter Panel */}
+        <section className="filter-panel-section">
+          <FilterPanel
+            onFiltersChange={(filters) => {
+              const filtered = filterService.searchAndFilter(
+                state.allFIRs,
+                filters,
+                state.searchQuery
+              );
+              const hotspots = hotspotService.detectHotspots(filtered);
+              setState((s) => ({
+                ...s,
+                filters,
+                filteredFIRs: filtered,
+                hotspots,
+              }));
+            }}
+            onSearch={handleSearch}
+            currentFilters={state.filters}
+            searchQuery={state.searchQuery}
+          />
+        </section>
+
+        {/* Crime Map */}
+        {state.filteredFIRs.length > 0 && (
+          <section className="map-section">
+            <CrimeMap
+              firs={state.filteredFIRs}
+              hotspots={state.hotspots}
+              selectedFIR={selectedFIR}
+              onFIRSelect={setSelectedFIR}
+            />
+          </section>
+        )}
+
+        {/* Analytics Dashboard */}
+        {state.filteredFIRs.length > 0 && (
+          <section className="analytics-section">
+            <AnalyticsPanel
+              insights={insightService.generateInsights(state.filteredFIRs)}
+              hotspots={state.hotspots}
+            />
+          </section>
+        )}
 
         {/* Statistics Panel */}
         <section className="statistics-panel">

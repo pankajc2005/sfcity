@@ -1,5 +1,5 @@
 import { FIR, Hotspot } from '../types';
-import { ZONE_DENSITY_THRESHOLDS, SEVERITY_LEVELS } from '../config/constants';
+import { ZONE_DENSITY_THRESHOLDS } from '../config/constants';
 
 /**
  * Geospatial Utilities for Crime Mapping and Hotspot Detection

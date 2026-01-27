@@ -39,7 +39,7 @@ FIR001,Theft,2026-01-20,14:30`;
       const csvContent = `id,crimeType,date,time,latitude,longitude,area,zone,policeStation
 FIR001,Theft,2026-01-20,14:30,invalid,77.3910,Downtown,Zone A,Central PS`;
 
-      const { records, errors } = parseCSV(csvContent);
+      const { records: _records, errors } = parseCSV(csvContent);
 
       expect(errors.length).toBeGreaterThan(0);
       expect(errors[0]).toContain('Invalid latitude');
@@ -49,7 +49,7 @@ FIR001,Theft,2026-01-20,14:30,invalid,77.3910,Downtown,Zone A,Central PS`;
       const csvContent = `id,crimeType,date,time,latitude,longitude,area,zone,policeStation
 FIR001,Theft,2026-01-20,14:30,100,77.3910,Downtown,Zone A,Central PS`;
 
-      const { records, errors } = parseCSV(csvContent);
+      const { records: _records, errors } = parseCSV(csvContent);
 
       expect(errors.length).toBeGreaterThan(0);
       expect(errors[0]).toContain('Invalid latitude');
@@ -59,7 +59,7 @@ FIR001,Theft,2026-01-20,14:30,100,77.3910,Downtown,Zone A,Central PS`;
       const csvContent = `id,crimeType,date,time,latitude,longitude,area,zone,policeStation
 FIR001,Theft,2026-01-20,14:30,28.5355,invalid,Downtown,Zone A,Central PS`;
 
-      const { records, errors } = parseCSV(csvContent);
+      const { records: _records, errors } = parseCSV(csvContent);
 
       expect(errors.length).toBeGreaterThan(0);
       expect(errors[0]).toContain('Invalid longitude');

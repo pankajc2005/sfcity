@@ -53,7 +53,7 @@ class HotspotService {
    * Calculates risk score for a hotspot (0-100)
    * Considers FIR count, percentage, and frequency
    */
-  calculateRiskScore(hotspot: Hotspot, totalFIRs: number): number {
+  calculateRiskScore(hotspot: Hotspot, _totalFIRs: number): number {
     // Base score from percentage (0-50)
     const percentageScore = Math.min((hotspot.percentage / 2), 50);
 
