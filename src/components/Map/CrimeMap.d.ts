@@ -1,5 +1,6 @@
 import React from 'react';
 import 'leaflet/dist/leaflet.css';
+import 'leaflet.heat';
 import { FIR, Hotspot } from '../../types';
 import './CrimeMap.css';
 interface CrimeMapProps {
