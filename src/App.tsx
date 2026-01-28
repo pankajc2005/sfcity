@@ -12,6 +12,7 @@ import { MapPage } from './pages/MapPage';
 import { AnalyticsPage } from './pages/AnalyticsPage';
 import { DataTablePage } from './pages/DataTablePage';
 import { IntegrationPage } from './pages/IntegrationPage';
+import { PolicePatrolPage } from './pages/PolicePatrolPage';
 import './App.css';
 
 interface AppState {
@@ -297,6 +298,10 @@ export const App: React.FC = () => {
               element={<DataTablePage filteredFIRs={state.filteredFIRs} />}
             />
             <Route path="/integration" element={<IntegrationPage />} />
+            <Route
+              path="/policing"
+              element={<PolicePatrolPage filteredFIRs={state.filteredFIRs} />}
+            />
           </Routes>
         </main>
       </div>

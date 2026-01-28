@@ -39,6 +39,12 @@ export const NavigationBar: React.FC = () => {
             Integration
           </NavLink>
         </li>
+        <li>
+          <NavLink to="/policing">
+            <span className="nav-icon">▪</span>
+            Policing
+          </NavLink>
+        </li>
       </ul>
     </nav>
   );
