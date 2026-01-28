@@ -17,33 +17,23 @@ interface CrimeMapProps {
  * Interactive crime mapping using Leaflet.js
  * Features:
  * - Display FIR locations as markers
- * - Hotspot visualization with color-coding by severity
  * - Interactive popups showing crime details
  * - Zoom and pan controls
- * - Layer toggle for FIRs and hotspots
+ * - Layer toggle for FIRs heatmap and markers
  *
  * Time Complexity: O(n) for rendering markers (n = number of FIRs)
  * Space Complexity: O(n) for marker storage
  */
 export const CrimeMap: React.FC<CrimeMapProps> = ({
   firs,
-  hotspots,
   selectedFIR,
   onFIRSelect,
 }) => {
   const mapRef = useRef<L.Map | null>(null);
   const markersRef = useRef<L.CircleMarker[]>([]);
-  const hotspotsLayerRef = useRef<L.FeatureGroup>(new L.FeatureGroup());
   const heatmapLayerRef = useRef<any>(null);
   const [viewMode, setViewMode] = useState<'heatmap' | 'markers'>('heatmap');
   const containerId = 'crime-map-container';
-
-  // Color scheme for severity
-  const SEVERITY_COLORS = {
-    low: { color: '#2e7d32', bgColor: '#c8e6c9' },
-    medium: { color: '#f57c00', bgColor: '#ffe0b2' },
-    high: { color: '#c62828', bgColor: '#ffcdd2' },
-  };
 
   // Initialize map on component mount
   useEffect(() => {
@@ -58,9 +48,6 @@ export const CrimeMap: React.FC<CrimeMapProps> = ({
         maxZoom: 19,
         minZoom: 5,
       }).addTo(map);
-
-      // Add hotspots layer
-      hotspotsLayerRef.current.addTo(map);
 
       mapRef.current = map;
 
@@ -138,43 +125,6 @@ export const CrimeMap: React.FC<CrimeMapProps> = ({
     }
   }, [firs, onFIRSelect, viewMode]);
 
-  // Update hotspot visualization
-  useEffect(() => {
-    if (!mapRef.current) return;
-
-    // Clear existing hotspot layers
-    hotspotsLayerRef.current.clearLayers();
-
-    // Add hotspot rectangles
-    hotspots.forEach((hotspot) => {
-      const severityColor = SEVERITY_COLORS[hotspot.severity];
-
-      // Create a circle for each hotspot
-      const circle = L.circleMarker(
-        [hotspot.centerLat, hotspot.centerLng],
-        {
-          radius: 15 + hotspot.firCount,
-          fillColor: severityColor.color,
-          color: severityColor.color,
-          weight: 2,
-          opacity: 0.4,
-          fillOpacity: 0.3,
-        }
-      ).bindPopup(
-        `<div class="hotspot-popup">
-          <strong>${hotspot.zoneName}</strong><br/>
-          <span class="severity-badge severity-${hotspot.severity}">
-            ${hotspot.severity.toUpperCase()}
-          </span><br/>
-          FIRs: ${hotspot.firCount} (${hotspot.percentage.toFixed(1)}%)<br/>
-          Location: ${hotspot.centerLat.toFixed(4)}, ${hotspot.centerLng.toFixed(4)}
-        </div>`
-      );
-
-      hotspotsLayerRef.current.addLayer(circle);
-    });
-  }, [hotspots]);
-
   // Handle selected FIR highlight
   useEffect(() => {
     if (!selectedFIR || !mapRef.current) return;
@@ -250,24 +200,6 @@ export const CrimeMap: React.FC<CrimeMapProps> = ({
               ></span>
               <span>Other Crimes</span>
             </div>
-            <div className="legend-item">
-              <span
-                className="legend-color legend-hotspot-low"
-              ></span>
-              <span>Hotspot (Low)</span>
-            </div>
-            <div className="legend-item">
-              <span
-                className="legend-color legend-hotspot-medium"
-              ></span>
-              <span>Hotspot (Medium)</span>
-            </div>
-            <div className="legend-item">
-              <span
-                className="legend-color legend-hotspot-high"
-              ></span>
-              <span>Hotspot (High)</span>
-            </div>
           </div>
         )}
       </div>
@@ -276,8 +208,7 @@ export const CrimeMap: React.FC<CrimeMapProps> = ({
 
       <div className="map-footer">
         <p>
-          📍 <strong>{firs.length}</strong> FIR Locations | 🎯
-          <strong>{hotspots.length}</strong> Hotspots Detected | 📊 View Mode: <strong>{viewMode === 'heatmap' ? 'Heatmap' : 'Markers'}</strong>
+          📍 <strong>{firs.length}</strong> FIR Locations | 📊 View Mode: <strong>{viewMode === 'heatmap' ? 'Heatmap' : 'Markers'}</strong>
         </p>
         <p className="map-info">
           {viewMode === 'heatmap' 
