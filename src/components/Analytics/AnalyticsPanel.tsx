@@ -11,7 +11,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from 'recharts';
 import { CrimeInsight, Hotspot } from '../../types';
@@ -167,9 +166,9 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({
                 cx="50%"
                 cy="50%"
                 outerRadius={80}
-                label={(entry) => `${entry.type}: ${entry.count}`}
+                label={(props: any) => `${props.type}: ${props.count}`}
               >
-                {insights.topCrimeTypes.map((entry, index) => (
+                {insights.topCrimeTypes.map((_entry: any, index: number) => (
                   <Cell
                     key={`cell-${index}`}
                     fill={COLORS[index % COLORS.length]}
@@ -307,7 +306,7 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({
         <div className="insight-section">
           <h4>📍 Predicted Peak Hours for Patrol</h4>
           <ul>
-            {insights.predictedPeakHours?.map((hour, idx) => (
+            {insights.predictedPeakHours && insights.predictedPeakHours.map((hour: number, idx: number) => (
               <li key={idx}>
                 <strong>{hour}:00 - {((hour + 1) % 24).toString().padStart(2, '0')}:00</strong> - Increase patrol presence
               </li>
@@ -318,7 +317,7 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({
         <div className="insight-section">
           <h4>⚠️ High-Risk Days</h4>
           <ul>
-            {insights.highRiskDays?.map((day, idx) => (
+            {insights.highRiskDays && insights.highRiskDays.map((day: any, idx: number) => (
               <li key={idx}>
                 <strong>{day.day}</strong> - {day.count} incidents (Above average)
               </li>

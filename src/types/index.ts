@@ -43,6 +43,10 @@ export interface CrimeInsight {
   peakHours: { hour: number; count: number }[];
   dayWiseTrends: { day: string; count: number }[];
   topCrimeTypes: { type: string; count: number }[];
+  monthlyTrends: { month: string; count: number }[];
+  areaStatistics: { area: string; count: number }[];
+  predictedPeakHours: number[];
+  highRiskDays: { day: string; count: number }[];
   totalFIRs: number;
   totalHotspots: number;
   generatedAt: Date;

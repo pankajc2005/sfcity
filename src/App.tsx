@@ -8,6 +8,7 @@ import { parseCSV } from './utils/csvParser';
 import { validateFIRBatch } from './utils/validation';
 import { CrimeMap } from './components/Map/CrimeMap';
 import { AnalyticsPanel } from './components/Analytics/AnalyticsPanel';
+import { IntegrationDashboard } from './components/Integration/IntegrationDashboard';
 import FilterPanel from './components/Filters/FilterPanel';
 
 interface AppState {
@@ -57,44 +58,135 @@ export const App: React.FC = () => {
     try {
       setState((s) => ({ ...s, loading: true }));
 
-      // Sample FIR data for MVP
+      // Sample FIR data for MVP - Mumbai locations (Malad & surrounding areas)
       const sampleFIRs: FIR[] = [
         {
           id: 'FIR001',
           crimeType: 'Theft',
-          date: new Date('2026-01-20'),
+          date: new Date('2026-01-25'),
           time: '14:30',
-          latitude: 28.5355,
-          longitude: 77.3910,
-          area: 'Downtown',
-          zone: 'Zone A',
-          policeStation: 'Central PS',
+          latitude: 19.1776,
+          longitude: 72.8298,
+          area: 'Malad West',
+          zone: 'Zone 11',
+          policeStation: 'Malad PS',
           isAccident: false,
           isSensitiveZone: false,
         },
         {
           id: 'FIR002',
           crimeType: 'Assault',
-          date: new Date('2026-01-21'),
+          date: new Date('2026-01-24'),
           time: '09:45',
-          latitude: 28.5360,
-          longitude: 77.3920,
-          area: 'Downtown',
-          zone: 'Zone A',
-          policeStation: 'Central PS',
+          latitude: 19.1820,
+          longitude: 72.8350,
+          area: 'Malad East',
+          zone: 'Zone 11',
+          policeStation: 'Malad PS',
           isAccident: false,
           isSensitiveZone: false,
         },
         {
           id: 'FIR003',
           crimeType: 'Robbery',
-          date: new Date('2026-01-19'),
+          date: new Date('2026-01-23'),
           time: '22:00',
-          latitude: 28.6000,
-          longitude: 77.4000,
-          area: 'Uptown',
-          zone: 'Zone B',
-          policeStation: 'North PS',
+          latitude: 19.1750,
+          longitude: 72.8250,
+          area: 'Malad Central',
+          zone: 'Zone 11',
+          policeStation: 'Malad PS',
+          isAccident: false,
+          isSensitiveZone: false,
+        },
+        {
+          id: 'FIR004',
+          crimeType: 'Theft',
+          date: new Date('2026-01-22'),
+          time: '11:15',
+          latitude: 19.1880,
+          longitude: 72.8280,
+          area: 'Marve Road',
+          zone: 'Zone 11',
+          policeStation: 'Malad PS',
+          isAccident: false,
+          isSensitiveZone: false,
+        },
+        {
+          id: 'FIR005',
+          crimeType: 'Assault',
+          date: new Date('2026-01-21'),
+          time: '18:45',
+          latitude: 19.1700,
+          longitude: 72.8400,
+          area: 'Borivali West',
+          zone: 'Zone 11',
+          policeStation: 'Borivali PS',
+          isAccident: false,
+          isSensitiveZone: false,
+        },
+        {
+          id: 'FIR006',
+          crimeType: 'Robbery',
+          date: new Date('2026-01-20'),
+          time: '20:30',
+          latitude: 19.1650,
+          longitude: 72.8350,
+          area: 'Borivali East',
+          zone: 'Zone 11',
+          policeStation: 'Borivali PS',
+          isAccident: false,
+          isSensitiveZone: false,
+        },
+        {
+          id: 'FIR007',
+          crimeType: 'Theft',
+          date: new Date('2026-01-26'),
+          time: '10:00',
+          latitude: 19.1800,
+          longitude: 72.8150,
+          area: 'Dahisar East',
+          zone: 'Zone 12',
+          policeStation: 'Dahisar PS',
+          isAccident: false,
+          isSensitiveZone: false,
+        },
+        {
+          id: 'FIR008',
+          crimeType: 'Assault',
+          date: new Date('2026-01-27'),
+          time: '15:20',
+          latitude: 19.1900,
+          longitude: 72.8200,
+          area: 'Dahisar West',
+          zone: 'Zone 12',
+          policeStation: 'Dahisar PS',
+          isAccident: false,
+          isSensitiveZone: false,
+        },
+        {
+          id: 'FIR009',
+          crimeType: 'Robbery',
+          date: new Date('2026-01-25'),
+          time: '19:00',
+          latitude: 19.1950,
+          longitude: 72.8400,
+          area: 'Malad West',
+          zone: 'Zone 11',
+          policeStation: 'Malad PS',
+          isAccident: false,
+          isSensitiveZone: false,
+        },
+        {
+          id: 'FIR010',
+          crimeType: 'Theft',
+          date: new Date('2026-01-26'),
+          time: '13:45',
+          latitude: 19.1730,
+          longitude: 72.8320,
+          area: 'Malad Central',
+          zone: 'Zone 11',
+          policeStation: 'Malad PS',
           isAccident: false,
           isSensitiveZone: false,
         },
@@ -362,6 +454,11 @@ export const App: React.FC = () => {
             />
           </section>
         )}
+
+        {/* Integration Linkage Dashboard */}
+        <section className="integration-section">
+          <IntegrationDashboard />
+        </section>
 
         {/* Statistics Panel */}
         <section className="statistics-panel">

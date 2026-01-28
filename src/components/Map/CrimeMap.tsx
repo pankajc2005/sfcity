@@ -32,7 +32,7 @@ export const CrimeMap: React.FC<CrimeMapProps> = ({
   onFIRSelect,
 }) => {
   const mapRef = useRef<L.Map | null>(null);
-  const markersRef = useRef<L.Marker[]>([]);
+  const markersRef = useRef<L.CircleMarker[]>([]);
   const hotspotsLayerRef = useRef<L.FeatureGroup>(new L.FeatureGroup());
   const containerId = 'crime-map-container';
 
@@ -46,8 +46,8 @@ export const CrimeMap: React.FC<CrimeMapProps> = ({
   // Initialize map on component mount
   useEffect(() => {
     if (!mapRef.current) {
-      // Create map instance
-      const map = L.map(containerId).setView([28.7041, 77.1025], 12);
+      // Create map instance (Malad, Mumbai)
+      const map = L.map(containerId).setView([19.1776, 72.8298], 13);
 
       // Add tile layer (OpenStreetMap)
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -164,9 +164,9 @@ export const CrimeMap: React.FC<CrimeMapProps> = ({
         markerLatLng.lng === selectedFIR.longitude
       ) {
         marker.openPopup();
-        marker.setStyle({ weight: 4, fillOpacity: 1 });
+        marker.setStyle({ weight: 4, fillOpacity: 1 } as L.PathOptions);
       } else {
-        marker.setStyle({ weight: 2, fillOpacity: 0.7 });
+        marker.setStyle({ weight: 2, fillOpacity: 0.7 } as L.PathOptions);
       }
     });
   }, [selectedFIR]);

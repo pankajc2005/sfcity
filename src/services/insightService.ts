@@ -16,10 +16,19 @@ class InsightService {
    * Generates comprehensive crime insights from FIR data
    */
   generateInsights(firs: FIR[]): CrimeInsight {
+    const dayTrends = this.getDayWiseTrends(firs);
+    const avgDailyCount = dayTrends.reduce((sum, d) => sum + d.count, 0) / 7;
+
     return {
       peakHours: this.getPeakHours(firs),
-      dayWiseTrends: this.getDayWiseTrends(firs),
+      dayWiseTrends: dayTrends,
       topCrimeTypes: this.getTopCrimeTypes(firs),
+      monthlyTrends: this.getMonthlyTrends(firs),
+      areaStatistics: this.getAreaStatistics(firs),
+      predictedPeakHours: this.getPredictedPeakHours(firs),
+      highRiskDays: dayTrends
+        .filter((d) => d.count > avgDailyCount)
+        .map((d) => ({ day: d.day, count: d.count })),
       totalFIRs: firs.length,
       totalHotspots: 0, // Set by caller
       generatedAt: new Date(),
