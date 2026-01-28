@@ -4,6 +4,7 @@ import { FIR, FilterCriteria, Hotspot } from './types';
 import { firService } from './services/firService';
 import { filterService } from './services/filterService';
 import { hotspotService } from './services/hotspotService';
+import { dataLoaderService } from './services/dataLoaderService';
 import { parseCSV } from './utils/csvParser';
 import { validateFIRBatch } from './utils/validation';
 import { NavigationBar } from './components/Navigation/NavigationBar';
@@ -49,17 +50,64 @@ export const App: React.FC = () => {
 
   const [selectedFIR, setSelectedFIR] = useState<FIR | undefined>(undefined);
 
-  // Initialize with empty data - users will upload their own CSV
+  // Initialize with Mumbai FIR data from CSV
   useEffect(() => {
-    // Clear any existing data from localStorage and start fresh
-    firService.clear();
-    setState((s) => ({
-      ...s,
-      allFIRs: [],
-      filteredFIRs: [],
-      hotspots: [],
-      loading: false,
-    }));
+    const loadMumbaiData = async () => {
+      setState((s) => ({ ...s, loading: true }));
+      
+      try {
+        const { records, errors } = await dataLoaderService.loadMumbaiData();
+
+        if (errors.length > 0) {
+          console.error('Data loading errors:', errors);
+        }
+
+        if (records.length === 0) {
+          setState((s) => ({
+            ...s,
+            error: 'No data could be loaded from the CSV file',
+            loading: false,
+          }));
+          return;
+        }
+
+        // Validate records
+        const { validRecords, invalidRecords } = validateFIRBatch(records);
+
+        if (invalidRecords.length > 0) {
+          console.warn(`${invalidRecords.length} records failed validation`);
+        }
+
+        // Clear existing data and add valid records
+        firService.clear();
+        const result = firService.addFIRBatch(validRecords);
+
+        if (result.failed > 0) {
+          console.warn(`Failed to add ${result.failed} records`);
+        }
+
+        // Update state
+        const allFIRs = firService.getAll();
+        const hotspots = hotspotService.detectHotspots(allFIRs);
+
+        setState((s) => ({
+          ...s,
+          allFIRs,
+          filteredFIRs: allFIRs,
+          hotspots,
+          error: null,
+          loading: false,
+        }));
+      } catch (error) {
+        setState((s) => ({
+          ...s,
+          error: error instanceof Error ? error.message : 'Failed to load data',
+          loading: false,
+        }));
+      }
+    };
+
+    loadMumbaiData();
   }, []);
 
   /**

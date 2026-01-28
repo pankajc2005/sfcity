@@ -1,4 +1,5 @@
 import React from 'react';
+import './App.css';
 /**
  * SafeCity MVP - Main Application Component
  *

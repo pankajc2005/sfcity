@@ -167,9 +167,9 @@ function parseFIRRecord(
 
   const description = data['description']?.trim() || undefined;
   const isAccident =
-    data['isaccident']?.trim().toLowerCase() === 'true' ? true : false;
+    ['true', '1', 'yes'].includes(data['isaccident']?.trim().toLowerCase() || '') ? true : false;
   const isSensitiveZone =
-    data['issensitivezone']?.trim().toLowerCase() === 'true' ? true : false;
+    ['true', '1', 'yes'].includes(data['issensitivezone']?.trim().toLowerCase() || '') ? true : false;
 
   return {
     id,
@@ -189,12 +189,21 @@ function parseFIRRecord(
 
 /**
  * Parses date string in multiple formats
- * Supports: YYYY-MM-DD, DD/MM/YYYY, MM/DD/YYYY
+ * Supports: YYYY-MM-DD, DD/MM/YYYY, MM/DD/YYYY, DD-MM-YYYY
  */
 function parseDate(dateStr: string): Date | null {
   // Try YYYY-MM-DD format
   if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
     const date = new Date(dateStr + 'T00:00:00');
+    if (!isNaN(date.getTime())) return date;
+  }
+
+  // Try DD-MM-YYYY format
+  if (/^\d{2}-\d{2}-\d{4}$/.test(dateStr)) {
+    const [day, month, year] = dateStr.split('-');
+    const date = new Date(
+      `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T00:00:00`
+    );
     if (!isNaN(date.getTime())) return date;
   }
 
