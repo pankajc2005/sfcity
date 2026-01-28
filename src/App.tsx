@@ -45,60 +45,18 @@ export const App: React.FC = () => {
 
   const [selectedFIR, setSelectedFIR] = useState<FIR | undefined>(undefined);
 
-  // Initialize with preloaded data on mount
+  // Initialize with empty data - users will upload their own CSV
   useEffect(() => {
-    loadPreloadedData();
+    // Clear any existing data from localStorage and start fresh
+    firService.clear();
+    setState((s) => ({
+      ...s,
+      allFIRs: [],
+      filteredFIRs: [],
+      hotspots: [],
+      loading: false,
+    }));
   }, []);
-
-  /**
-   * Loads preloaded sample FIR dataset from CSV file
-   * In production, this would fetch from backend API
-   */
-  const loadPreloadedData = async () => {
-    try {
-      setState((s) => ({ ...s, loading: true }));
-
-      // Fetch CSV data from public folder
-      const response = await fetch('/sample-fir-data.csv');
-      if (!response.ok) {
-        throw new Error('Failed to load sample data CSV');
-      }
-
-      const csvContent = await response.text();
-      const { records, errors } = parseCSV(csvContent);
-
-      if (errors.length > 0) {
-        console.warn('CSV parsing warnings:', errors);
-      }
-
-      // Validate records
-      const { validRecords } = validateFIRBatch(records);
-
-      // Clear existing data before loading new data to prevent duplicates
-      firService.clear();
-
-      // Add valid records to service
-      validRecords.forEach((fir) => firService.addFIR(fir));
-
-      const allFIRs = firService.getAll();
-      const hotspots = hotspotService.detectHotspots(allFIRs);
-
-      setState((s) => ({
-        ...s,
-        allFIRs,
-        filteredFIRs: allFIRs,
-        hotspots,
-        loading: false,
-      }));
-    } catch (error) {
-      setState((s) => ({
-        ...s,
-        error:
-          error instanceof Error ? error.message : 'Failed to load data',
-        loading: false,
-      }));
-    }
-  };
 
   /**
    * Handles CSV file upload and import
