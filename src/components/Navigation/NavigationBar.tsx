@@ -28,12 +28,6 @@ export const NavigationBar: React.FC = () => {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/hotspots">
-            <span className="nav-icon">▪</span>
-            Hotspots
-          </NavLink>
-        </li>
-        <li>
           <NavLink to="/data">
             <span className="nav-icon">▪</span>
             FIR Records

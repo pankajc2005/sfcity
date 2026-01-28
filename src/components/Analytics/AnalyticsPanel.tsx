@@ -13,12 +13,11 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
-import { CrimeInsight, Hotspot } from '../../types';
+import { CrimeInsight } from '../../types';
 import './AnalyticsPanel.css';
 
 interface AnalyticsPanelProps {
   insights: CrimeInsight;
-  hotspots: Hotspot[];
 }
 
 /**
@@ -36,7 +35,6 @@ interface AnalyticsPanelProps {
  */
 export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({
   insights,
-  hotspots,
 }) => {
   // Colors for charts
   const COLORS = ['#2e7d32', '#f57c00', '#c62828'];

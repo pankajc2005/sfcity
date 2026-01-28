@@ -2,12 +2,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet.heat';
-import { FIR, Hotspot } from '../../types';
+import { FIR } from '../../types';
 import './CrimeMap.css';
 
 interface CrimeMapProps {
   firs: FIR[];
-  hotspots: Hotspot[];
   selectedFIR?: FIR;
   onFIRSelect?: (fir: FIR) => void;
 }

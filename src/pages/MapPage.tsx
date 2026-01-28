@@ -1,18 +1,16 @@
 import React from 'react';
 import { CrimeMap } from '../components/Map/CrimeMap';
-import { FIR, Hotspot } from '../types';
+import { FIR } from '../types';
 import './MapPage.css';
 
 interface MapPageProps {
   filteredFIRs: FIR[];
-  hotspots: Hotspot[];
   selectedFIR?: FIR;
   onFIRSelect: (fir?: FIR) => void;
 }
 
 export const MapPage: React.FC<MapPageProps> = ({
   filteredFIRs,
-  hotspots,
   selectedFIR,
   onFIRSelect,
 }) => {
@@ -31,7 +29,6 @@ export const MapPage: React.FC<MapPageProps> = ({
         <div className="map-container">
           <CrimeMap
             firs={filteredFIRs}
-            hotspots={hotspots}
             selectedFIR={selectedFIR}
             onFIRSelect={onFIRSelect}
           />

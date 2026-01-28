@@ -1,17 +1,15 @@
 import React from 'react';
 import { AnalyticsPanel } from '../components/Analytics/AnalyticsPanel';
-import { FIR, Hotspot } from '../types';
+import { FIR } from '../types';
 import { insightService } from '../services/insightService';
 import './AnalyticsPage.css';
 
 interface AnalyticsPageProps {
   filteredFIRs: FIR[];
-  hotspots: Hotspot[];
 }
 
 export const AnalyticsPage: React.FC<AnalyticsPageProps> = ({
   filteredFIRs,
-  hotspots,
 }) => {
   const insights = insightService.generateInsights(filteredFIRs);
 
@@ -85,7 +83,7 @@ export const AnalyticsPage: React.FC<AnalyticsPageProps> = ({
           </section>
 
           <section className="analytics-panel-section">
-            <AnalyticsPanel insights={insights} hotspots={hotspots} />
+            <AnalyticsPanel insights={insights} />
           </section>
         </>
       )}

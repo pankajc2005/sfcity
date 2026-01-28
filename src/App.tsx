@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { FIR, FilterCriteria, Hotspot } from './types';
+import { FIR, FilterCriteria } from './types';
 import { firService } from './services/firService';
 import { filterService } from './services/filterService';
-import { hotspotService } from './services/hotspotService';
 import { dataLoaderService } from './services/dataLoaderService';
 import { parseCSV } from './utils/csvParser';
 import { validateFIRBatch } from './utils/validation';
@@ -11,7 +10,6 @@ import { NavigationBar } from './components/Navigation/NavigationBar';
 import { DashboardPage } from './pages/DashboardPage';
 import { MapPage } from './pages/MapPage';
 import { AnalyticsPage } from './pages/AnalyticsPage';
-import { HotspotsPage } from './pages/HotspotsPage';
 import { DataTablePage } from './pages/DataTablePage';
 import { IntegrationPage } from './pages/IntegrationPage';
 import './App.css';
@@ -19,7 +17,6 @@ import './App.css';
 interface AppState {
   allFIRs: FIR[];
   filteredFIRs: FIR[];
-  hotspots: Hotspot[];
   filters: FilterCriteria;
   searchQuery: string;
   loading: boolean;
@@ -41,7 +38,6 @@ export const App: React.FC = () => {
   const [state, setState] = useState<AppState>({
     allFIRs: [],
     filteredFIRs: [],
-    hotspots: [],
     filters: filterService.resetFilters(),
     searchQuery: '',
     loading: false,
@@ -88,13 +84,11 @@ export const App: React.FC = () => {
 
         // Update state
         const allFIRs = firService.getAll();
-        const hotspots = hotspotService.detectHotspots(allFIRs);
 
         setState((s) => ({
           ...s,
           allFIRs,
           filteredFIRs: allFIRs,
-          hotspots,
           error: null,
           loading: false,
         }));
@@ -151,13 +145,11 @@ export const App: React.FC = () => {
 
         // Update state
         const allFIRs = firService.getAll();
-        const hotspots = hotspotService.detectHotspots(allFIRs);
 
         setState((s) => ({
           ...s,
           allFIRs,
           filteredFIRs: allFIRs,
-          hotspots,
           error: null,
         }));
       } catch (error) {
@@ -211,13 +203,10 @@ export const App: React.FC = () => {
       query
     );
 
-    const hotspots = hotspotService.detectHotspots(filtered);
-
     setState((s) => ({
       ...s,
       searchQuery: query,
       filteredFIRs: filtered,
-      hotspots,
     }));
   };
 
@@ -226,13 +215,11 @@ export const App: React.FC = () => {
    */
   const handleResetFilters = () => {
     const resetFilters = filterService.resetFilters();
-    const hotspots = hotspotService.detectHotspots(state.allFIRs);
 
     setState((s) => ({
       ...s,
       filters: resetFilters,
       filteredFIRs: state.allFIRs,
-      hotspots,
       searchQuery: '',
     }));
   };
@@ -257,12 +244,10 @@ export const App: React.FC = () => {
       newFilters,
       state.searchQuery
     );
-    const hotspots = hotspotService.detectHotspots(filtered);
     setState((s) => ({
       ...s,
       filters: newFilters,
       filteredFIRs: filtered,
-      hotspots,
     }));
   };
 
@@ -278,7 +263,6 @@ export const App: React.FC = () => {
                 <DashboardPage
                   allFIRs={state.allFIRs}
                   filteredFIRs={state.filteredFIRs}
-                  hotspots={state.hotspots}
                   filters={state.filters}
                   searchQuery={state.searchQuery}
                   error={state.error}
@@ -295,7 +279,6 @@ export const App: React.FC = () => {
               element={
                 <MapPage
                   filteredFIRs={state.filteredFIRs}
-                  hotspots={state.hotspots}
                   selectedFIR={selectedFIR}
                   onFIRSelect={setSelectedFIR}
                 />
@@ -306,13 +289,8 @@ export const App: React.FC = () => {
               element={
                 <AnalyticsPage
                   filteredFIRs={state.filteredFIRs}
-                  hotspots={state.hotspots}
                 />
               }
-            />
-            <Route
-              path="/hotspots"
-              element={<HotspotsPage hotspots={state.hotspots} />}
             />
             <Route
               path="/data"

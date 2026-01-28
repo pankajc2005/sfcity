@@ -6,7 +6,6 @@ import './DashboardPage.css';
 interface DashboardPageProps {
   allFIRs: FIR[];
   filteredFIRs: FIR[];
-  hotspots: any[];
   filters: FilterCriteria;
   searchQuery: string;
   error: string | null;
@@ -20,7 +19,6 @@ interface DashboardPageProps {
 export const DashboardPage: React.FC<DashboardPageProps> = ({
   allFIRs,
   filteredFIRs,
-  hotspots,
   filters,
   searchQuery,
   error,
@@ -51,10 +49,6 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
         <div className="stat-card">
           <h3>Filtered FIRs</h3>
           <p className="stat-value">{filteredFIRs.length}</p>
-        </div>
-        <div className="stat-card">
-          <h3>Hotspots</h3>
-          <p className="stat-value">{hotspots.length}</p>
         </div>
       </div>
 
