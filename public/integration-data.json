@@ -2,7 +2,7 @@
   "integrationStatuses": [
     {
       "name": "CCTNS FIR Gateway",
-      "status": "Connected",
+      "status": "NotConnected",
       "mode": "Mock",
       "lastSync": "2026-01-28 10:41 IST",
       "recordsSynced": "12,482",
@@ -11,7 +11,7 @@
     },
     {
       "name": "NCRB Analytics Feed",
-      "status": "Connected",
+      "status": "NotConnected",
       "mode": "Mock",
       "lastSync": "2026-01-28 10:38 IST",
       "recordsSynced": "58,910",
@@ -20,7 +20,7 @@
     },
     {
       "name": "State Police Portal",
-      "status": "Connected",
+      "status": "NotConnected",
       "mode": "Mock",
       "lastSync": "2026-01-28 10:35 IST",
       "recordsSynced": "2,215",
@@ -29,7 +29,7 @@
     },
     {
       "name": "Aadhaar Verification",
-      "status": "Connected",
+      "status": "NotConnected",
       "mode": "Mock",
       "lastSync": "2026-01-28 10:32 IST",
       "recordsSynced": "1,006",

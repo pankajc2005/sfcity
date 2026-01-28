@@ -28,7 +28,6 @@ interface AnalyticsPanelProps {
  * - Day-wise crime trends (line chart)
  * - Crime type distribution (pie chart)
  * - Monthly trends (bar chart)
- * - Hotspot severity distribution (pie chart)
  *
  * Time Complexity: O(n) for data rendering
  * Space Complexity: O(n) for chart data
@@ -45,25 +44,6 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({
     warning: '#f57c00',
     danger: '#c62828',
   };
-
-  // Calculate hotspot severity distribution
-  const severityDistribution = [
-    {
-      name: 'Low',
-      value: hotspots.filter((h) => h.severity === 'low').length,
-      color: COLORS[0],
-    },
-    {
-      name: 'Medium',
-      value: hotspots.filter((h) => h.severity === 'medium').length,
-      color: COLORS[1],
-    },
-    {
-      name: 'High',
-      value: hotspots.filter((h) => h.severity === 'high').length,
-      color: COLORS[2],
-    },
-  ];
 
   // Day names for x-axis
   const dayNames = [
@@ -180,31 +160,6 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({
           </ResponsiveContainer>
         </div>
 
-        {/* Hotspot Severity Distribution */}
-        <div className="chart-container">
-          <h3>Hotspot Severity Distribution</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={severityDistribution}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius={80}
-                label={(entry) => `${entry.name}: ${entry.value}`}
-              >
-                {severityDistribution.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip
-                formatter={(value) => `${value} hotspots`}
-              />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-
         {/* Monthly Trends */}
         <div className="chart-container">
           <h3>Monthly Crime Trends</h3>
@@ -273,11 +228,6 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({
         <div className="summary-card">
           <h4>Areas Covered</h4>
           <p className="summary-value">{insights.areaStatistics.length}</p>
-        </div>
-
-        <div className="summary-card">
-          <h4>Total Hotspots</h4>
-          <p className="summary-value">{hotspots.length}</p>
         </div>
 
         <div className="summary-card">
