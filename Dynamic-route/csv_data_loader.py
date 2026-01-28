@@ -16,7 +16,7 @@ class Incident:
         self.severity = severity
         self.timestamp = timestamp or datetime.utcnow()
 
-def load_data_from_csv(csv_file_path='mumbai_fir_dummy_land_only.csv'):
+def load_data_from_csv(csv_file_path='db/mumbai_fir_dummy_land_only.csv'):
     """
     Load incident data from CSV file and convert to Camera and Incident objects.
     
