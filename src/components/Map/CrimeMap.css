@@ -19,12 +19,45 @@
   background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
   color: white;
   border-bottom: 2px solid var(--primary-dark);
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .map-header h2 {
   margin: 0;
   font-size: 1.5rem;
   font-weight: 700;
+}
+
+.view-toggle {
+  display: flex;
+  gap: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 0.5rem;
+  border-radius: 8px;
+}
+
+.toggle-btn {
+  padding: 0.5rem 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.toggle-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.toggle-btn.active {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-color: white;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
 .map-legend {
@@ -60,6 +93,52 @@
 
 .legend-hotspot-high {
   background-color: #c62828;
+}
+
+/* Heatmap Legend */
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+}
+
+.legend-label {
+  font-weight: 600;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+.heatmap-gradient {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.gradient-bar {
+  width: 150px;
+  height: 20px;
+  background: linear-gradient(to right, 
+    #0000ff 0%,    /* Blue - Low */
+    #00ffff 20%,   /* Cyan */
+    #00ff00 40%,   /* Green */
+    #ffff00 60%,   /* Yellow */
+    #ff0000 100%   /* Red - High */
+  );
+  border-radius: 4px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.gradient-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0 0.25rem;
 }
 
 /* Map Container */
