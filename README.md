@@ -88,8 +88,9 @@ src/
 ├── config/              # Configuration and constants
 └── App.tsx             # Main application component
 
-data/
-└── sample-fir-dataset.csv    # Preloaded historical FIR data
+public/
+├── sample-fir-data.csv       # Preloaded historical FIR data (CSV format)
+└── integration-data.json     # Integration dashboard mock data
 ```
 
 ---
@@ -97,7 +98,7 @@ data/
 ## Architecture & Design Patterns
 
 ### Data Flow
-1. **FIR Data Ingestion** → CSV/Excel upload or preloaded dataset
+1. **FIR Data Ingestion** → CSV/Excel upload or preloaded dataset from `/public/sample-fir-data.csv`
 2. **Data Validation** → Ensure required fields and data integrity
 3. **Filtering & Analysis** → Apply user-selected filters
 4. **Hotspot Calculation** → Grid-based density analysis

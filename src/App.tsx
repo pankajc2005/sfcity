@@ -51,149 +51,34 @@ export const App: React.FC = () => {
   }, []);
 
   /**
-   * Loads preloaded sample FIR dataset
+   * Loads preloaded sample FIR dataset from CSV file
    * In production, this would fetch from backend API
    */
   const loadPreloadedData = async () => {
     try {
       setState((s) => ({ ...s, loading: true }));
 
-      // Sample FIR data for MVP - Mumbai locations (Malad & surrounding areas)
-      const sampleFIRs: FIR[] = [
-        {
-          id: 'FIR001',
-          crimeType: 'Theft',
-          date: new Date('2026-01-25'),
-          time: '14:30',
-          latitude: 19.1776,
-          longitude: 72.8298,
-          area: 'Malad West',
-          zone: 'Zone 11',
-          policeStation: 'Malad PS',
-          isAccident: false,
-          isSensitiveZone: false,
-        },
-        {
-          id: 'FIR002',
-          crimeType: 'Assault',
-          date: new Date('2026-01-24'),
-          time: '09:45',
-          latitude: 19.1820,
-          longitude: 72.8350,
-          area: 'Malad East',
-          zone: 'Zone 11',
-          policeStation: 'Malad PS',
-          isAccident: false,
-          isSensitiveZone: false,
-        },
-        {
-          id: 'FIR003',
-          crimeType: 'Robbery',
-          date: new Date('2026-01-23'),
-          time: '22:00',
-          latitude: 19.1750,
-          longitude: 72.8250,
-          area: 'Malad Central',
-          zone: 'Zone 11',
-          policeStation: 'Malad PS',
-          isAccident: false,
-          isSensitiveZone: false,
-        },
-        {
-          id: 'FIR004',
-          crimeType: 'Theft',
-          date: new Date('2026-01-22'),
-          time: '11:15',
-          latitude: 19.1880,
-          longitude: 72.8280,
-          area: 'Marve Road',
-          zone: 'Zone 11',
-          policeStation: 'Malad PS',
-          isAccident: false,
-          isSensitiveZone: false,
-        },
-        {
-          id: 'FIR005',
-          crimeType: 'Assault',
-          date: new Date('2026-01-21'),
-          time: '18:45',
-          latitude: 19.1700,
-          longitude: 72.8400,
-          area: 'Borivali West',
-          zone: 'Zone 11',
-          policeStation: 'Borivali PS',
-          isAccident: false,
-          isSensitiveZone: false,
-        },
-        {
-          id: 'FIR006',
-          crimeType: 'Robbery',
-          date: new Date('2026-01-20'),
-          time: '20:30',
-          latitude: 19.1650,
-          longitude: 72.8350,
-          area: 'Borivali East',
-          zone: 'Zone 11',
-          policeStation: 'Borivali PS',
-          isAccident: false,
-          isSensitiveZone: false,
-        },
-        {
-          id: 'FIR007',
-          crimeType: 'Theft',
-          date: new Date('2026-01-26'),
-          time: '10:00',
-          latitude: 19.1800,
-          longitude: 72.8150,
-          area: 'Dahisar East',
-          zone: 'Zone 12',
-          policeStation: 'Dahisar PS',
-          isAccident: false,
-          isSensitiveZone: false,
-        },
-        {
-          id: 'FIR008',
-          crimeType: 'Assault',
-          date: new Date('2026-01-27'),
-          time: '15:20',
-          latitude: 19.1900,
-          longitude: 72.8200,
-          area: 'Dahisar West',
-          zone: 'Zone 12',
-          policeStation: 'Dahisar PS',
-          isAccident: false,
-          isSensitiveZone: false,
-        },
-        {
-          id: 'FIR009',
-          crimeType: 'Robbery',
-          date: new Date('2026-01-25'),
-          time: '19:00',
-          latitude: 19.1950,
-          longitude: 72.8400,
-          area: 'Malad West',
-          zone: 'Zone 11',
-          policeStation: 'Malad PS',
-          isAccident: false,
-          isSensitiveZone: false,
-        },
-        {
-          id: 'FIR010',
-          crimeType: 'Theft',
-          date: new Date('2026-01-26'),
-          time: '13:45',
-          latitude: 19.1730,
-          longitude: 72.8320,
-          area: 'Malad Central',
-          zone: 'Zone 11',
-          policeStation: 'Malad PS',
-          isAccident: false,
-          isSensitiveZone: false,
-        },
-      ];
+      // Fetch CSV data from public folder
+      const response = await fetch('/sample-fir-data.csv');
+      if (!response.ok) {
+        throw new Error('Failed to load sample data CSV');
+      }
 
-      // Validate and add to service
-      sampleFIRs.forEach((fir) => firService.addFIR(fir));
+      const csvContent = await response.text();
+      const { records, errors } = parseCSV(csvContent);
+
+      if (errors.length > 0) {
+        console.warn('CSV parsing warnings:', errors);
+      }
+
+      // Validate records
+      const { validRecords } = validateFIRBatch(records);
+
+      // Clear existing data before loading new data to prevent duplicates
+      firService.clear();
+
+      // Add valid records to service
+      validRecords.forEach((fir) => firService.addFIR(fir));
 
       const allFIRs = firService.getAll();
       const hotspots = hotspotService.detectHotspots(allFIRs);

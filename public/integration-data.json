@@ -1,0 +1,96 @@
+{
+  "integrationStatuses": [
+    {
+      "name": "CCTNS FIR Gateway",
+      "status": "Connected",
+      "mode": "Mock",
+      "lastSync": "2026-01-28 10:41 IST",
+      "recordsSynced": "12,482",
+      "latencyMs": 128,
+      "uptime": "99.8%"
+    },
+    {
+      "name": "NCRB Analytics Feed",
+      "status": "Connected",
+      "mode": "Mock",
+      "lastSync": "2026-01-28 10:38 IST",
+      "recordsSynced": "58,910",
+      "latencyMs": 96,
+      "uptime": "99.9%"
+    },
+    {
+      "name": "State Police Portal",
+      "status": "Connected",
+      "mode": "Mock",
+      "lastSync": "2026-01-28 10:35 IST",
+      "recordsSynced": "2,215",
+      "latencyMs": 142,
+      "uptime": "99.6%"
+    },
+    {
+      "name": "Aadhaar Verification",
+      "status": "Connected",
+      "mode": "Mock",
+      "lastSync": "2026-01-28 10:32 IST",
+      "recordsSynced": "1,006",
+      "latencyMs": 180,
+      "uptime": "99.2%"
+    },
+    {
+      "name": "Court Case Tracker",
+      "status": "Degraded",
+      "mode": "Mock",
+      "lastSync": "2026-01-28 10:20 IST",
+      "recordsSynced": "540",
+      "latencyMs": 320,
+      "uptime": "98.1%"
+    }
+  ],
+  "apiHealth": [
+    { "name": "FIR Submit API", "latencyMs": 120, "status": "Healthy" },
+    { "name": "FIR Search API", "latencyMs": 140, "status": "Healthy" },
+    { "name": "Case Sync API", "latencyMs": 220, "status": "Warning" },
+    { "name": "Citizen Verification API", "latencyMs": 180, "status": "Healthy" },
+    { "name": "Officer Dispatch API", "latencyMs": 260, "status": "Warning" }
+  ],
+  "syncLogs": [
+    {
+      "id": "log-1",
+      "time": "10:41:22 IST",
+      "message": "CCTNS FIR batch sync completed (248 records).",
+      "status": "success"
+    },
+    {
+      "id": "log-2",
+      "time": "10:38:07 IST",
+      "message": "NCRB analytics feed updated (weekly trend).",
+      "status": "success"
+    },
+    {
+      "id": "log-3",
+      "time": "10:35:12 IST",
+      "message": "State Police portal officer roster refreshed.",
+      "status": "success"
+    },
+    {
+      "id": "log-4",
+      "time": "10:28:40 IST",
+      "message": "Court tracker latency spike detected (retry queued).",
+      "status": "warning"
+    },
+    {
+      "id": "log-5",
+      "time": "10:18:19 IST",
+      "message": "Aadhaar verification service healthy (100% success).",
+      "status": "success"
+    }
+  ],
+  "dataContracts": [
+    "POST /api/integrations/cctns/submit-fir",
+    "GET /api/integrations/cctns/search/{firId}",
+    "GET /api/integrations/ncrb/crime-statistics",
+    "GET /api/integrations/state/officers",
+    "POST /api/integrations/aadhaar/verify",
+    "GET /api/integrations/courts/case/{caseId}"
+  ]
+}

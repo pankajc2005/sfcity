@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './IntegrationDashboard.css';
 
 interface IntegrationStatus {
@@ -24,103 +24,12 @@ interface SyncLog {
   status: 'success' | 'warning' | 'error';
 }
 
-const integrationStatuses: IntegrationStatus[] = [
-  {
-    name: 'CCTNS FIR Gateway',
-    status: 'Connected',
-    mode: 'Mock',
-    lastSync: '2026-01-28 10:41 IST',
-    recordsSynced: '12,482',
-    latencyMs: 128,
-    uptime: '99.8%',
-  },
-  {
-    name: 'NCRB Analytics Feed',
-    status: 'Connected',
-    mode: 'Mock',
-    lastSync: '2026-01-28 10:38 IST',
-    recordsSynced: '58,910',
-    latencyMs: 96,
-    uptime: '99.9%',
-  },
-  {
-    name: 'State Police Portal',
-    status: 'Connected',
-    mode: 'Mock',
-    lastSync: '2026-01-28 10:35 IST',
-    recordsSynced: '2,215',
-    latencyMs: 142,
-    uptime: '99.6%',
-  },
-  {
-    name: 'Aadhaar Verification',
-    status: 'Connected',
-    mode: 'Mock',
-    lastSync: '2026-01-28 10:32 IST',
-    recordsSynced: '1,006',
-    latencyMs: 180,
-    uptime: '99.2%',
-  },
-  {
-    name: 'Court Case Tracker',
-    status: 'Degraded',
-    mode: 'Mock',
-    lastSync: '2026-01-28 10:20 IST',
-    recordsSynced: '540',
-    latencyMs: 320,
-    uptime: '98.1%',
-  },
-];
-
-const apiHealth: ApiHealth[] = [
-  { name: 'FIR Submit API', latencyMs: 120, status: 'Healthy' },
-  { name: 'FIR Search API', latencyMs: 140, status: 'Healthy' },
-  { name: 'Case Sync API', latencyMs: 220, status: 'Warning' },
-  { name: 'Citizen Verification API', latencyMs: 180, status: 'Healthy' },
-  { name: 'Officer Dispatch API', latencyMs: 260, status: 'Warning' },
-];
-
-const syncLogs: SyncLog[] = [
-  {
-    id: 'log-1',
-    time: '10:41:22 IST',
-    message: 'CCTNS FIR batch sync completed (248 records).',
-    status: 'success',
-  },
-  {
-    id: 'log-2',
-    time: '10:38:07 IST',
-    message: 'NCRB analytics feed updated (weekly trend).',
-    status: 'success',
-  },
-  {
-    id: 'log-3',
-    time: '10:35:12 IST',
-    message: 'State Police portal officer roster refreshed.',
-    status: 'success',
-  },
-  {
-    id: 'log-4',
-    time: '10:28:40 IST',
-    message: 'Court tracker latency spike detected (retry queued).',
-    status: 'warning',
-  },
-  {
-    id: 'log-5',
-    time: '10:18:19 IST',
-    message: 'Aadhaar verification service healthy (100% success).',
-    status: 'success',
-  },
-];
-
-const dataContracts = [
-  'POST /api/integrations/cctns/submit-fir',
-  'GET /api/integrations/cctns/search/{firId}',
-  'GET /api/integrations/ncrb/crime-statistics',
-  'GET /api/integrations/state/officers',
-  'POST /api/integrations/aadhaar/verify',
-  'GET /api/integrations/courts/case/{caseId}',
-];
+interface IntegrationData {
+  integrationStatuses: IntegrationStatus[];
+  apiHealth: ApiHealth[];
+  syncLogs: SyncLog[];
+  dataContracts: string[];
+}
 
 const renderStatusBadge = (status: IntegrationStatus['status']) => {
   const className = status === 'Connected' ? 'status-connected' : status === 'Degraded' ? 'status-degraded' : 'status-offline';
@@ -133,6 +42,42 @@ const renderHealthBadge = (status: ApiHealth['status']) => {
 };
 
 export const IntegrationDashboard: React.FC = () => {
+  const [data, setData] = useState<IntegrationData>({
+    integrationStatuses: [],
+    apiHealth: [],
+    syncLogs: [],
+    dataContracts: [],
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadIntegrationData = async () => {
+      try {
+        const response = await fetch('/integration-data.json');
+        if (!response.ok) {
+          throw new Error('Failed to load integration data');
+        }
+        const jsonData: IntegrationData = await response.json();
+        setData(jsonData);
+        setLoading(false);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Unknown error');
+        setLoading(false);
+      }
+    };
+
+    loadIntegrationData();
+  }, []);
+
+  if (loading) {
+    return <div className="integration-dashboard">Loading integration data...</div>;
+  }
+
+  if (error) {
+    return <div className="integration-dashboard error">Error: {error}</div>;
+  }
+
   return (
     <div className="integration-dashboard">
       <div className="integration-header">
@@ -148,7 +93,7 @@ export const IntegrationDashboard: React.FC = () => {
       </div>
 
       <div className="integration-grid">
-        {integrationStatuses.map((item) => (
+        {data.integrationStatuses.map((item) => (
           <div key={item.name} className="integration-card">
             <div className="card-header">
               <h3>{item.name}</h3>
@@ -181,7 +126,7 @@ export const IntegrationDashboard: React.FC = () => {
         <div className="panel api-health">
           <h3>API Health & Latency</h3>
           <div className="health-list">
-            {apiHealth.map((api) => (
+            {data.apiHealth.map((api) => (
               <div key={api.name} className="health-row">
                 <div className="health-info">
                   <span className="health-name">{api.name}</span>
@@ -202,7 +147,7 @@ export const IntegrationDashboard: React.FC = () => {
         <div className="panel sync-logs">
           <h3>Recent Sync Logs</h3>
           <ul>
-            {syncLogs.map((log) => (
+            {data.syncLogs.map((log) => (
               <li key={log.id} className={`log-item ${log.status}`}>
                 <span className="log-time">{log.time}</span>
                 <span className="log-message">{log.message}</span>
@@ -232,7 +177,7 @@ export const IntegrationDashboard: React.FC = () => {
         <div className="panel contract-panel">
           <h3>API Contracts (Samples)</h3>
           <ul>
-            {dataContracts.map((contract) => (
+            {data.dataContracts.map((contract) => (
               <li key={contract}>{contract}</li>
             ))}
           </ul>
