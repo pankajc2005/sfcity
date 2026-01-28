@@ -1,0 +1,93 @@
+.navigation-bar {
+  width: 250px;
+  height: 100vh;
+  background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+  color: #fff;
+  padding: 20px 0;
+  position: fixed;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.nav-header {
+  padding: 0 20px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 20px;
+}
+
+.nav-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #4a9eff;
+}
+
+.nav-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1;
+}
+
+.nav-menu li {
+  margin: 0;
+}
+
+.nav-menu a {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  color: #e0e0e0;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border-left: 3px solid transparent;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.nav-menu a:hover {
+  background-color: rgba(74, 158, 255, 0.1);
+  color: #fff;
+  border-left-color: #4a9eff;
+}
+
+.nav-menu a.active {
+  background-color: rgba(74, 158, 255, 0.2);
+  color: #4a9eff;
+  border-left-color: #4a9eff;
+}
+
+.nav-icon {
+  margin-right: 12px;
+  font-size: 20px;
+  display: inline-block;
+  min-width: 24px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .navigation-bar {
+    width: 70px;
+  }
+
+  .nav-header h2 {
+    display: none;
+  }
+
+  .nav-menu a {
+    justify-content: center;
+    padding: 15px 10px;
+  }
+
+  .nav-menu a span:not(.nav-icon) {
+    display: none;
+  }
+
+  .nav-icon {
+    margin-right: 0;
+  }
+}

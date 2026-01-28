@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { FIR, FilterCriteria, Hotspot } from './types';
 import { firService } from './services/firService';
 import { filterService } from './services/filterService';
 import { hotspotService } from './services/hotspotService';
-import { insightService } from './services/insightService';
 import { parseCSV } from './utils/csvParser';
 import { validateFIRBatch } from './utils/validation';
-import { CrimeMap } from './components/Map/CrimeMap';
-import { AnalyticsPanel } from './components/Analytics/AnalyticsPanel';
-import { IntegrationDashboard } from './components/Integration/IntegrationDashboard';
-import FilterPanel from './components/Filters/FilterPanel';
+import { NavigationBar } from './components/Navigation/NavigationBar';
+import { DashboardPage } from './pages/DashboardPage';
+import { MapPage } from './pages/MapPage';
+import { AnalyticsPage } from './pages/AnalyticsPage';
+import { HotspotsPage } from './pages/HotspotsPage';
+import { DataTablePage } from './pages/DataTablePage';
+import { IntegrationPage } from './pages/IntegrationPage';
+import './App.css';
 
 interface AppState {
   allFIRs: FIR[];
@@ -199,241 +203,78 @@ export const App: React.FC = () => {
   };
 
   // Generate insights from filtered data
-  const insights = insightService.generateInsights(state.filteredFIRs);
-  const hotspotStats = hotspotService.getStatistics(state.hotspots);
+  const handleFiltersChange = (newFilters: FilterCriteria) => {
+    const filtered = filterService.searchAndFilter(
+      state.allFIRs,
+      newFilters,
+      state.searchQuery
+    );
+    const hotspots = hotspotService.detectHotspots(filtered);
+    setState((s) => ({
+      ...s,
+      filters: newFilters,
+      filteredFIRs: filtered,
+      hotspots,
+    }));
+  };
 
   return (
-    <div className="app-container">
-      <header className="app-header">
-        <h1>SafeCity MVP - Crime Mapping & Patrol Decision Support</h1>
-        <p>
-          Total FIRs: {state.allFIRs.length} | Filtered: {state.filteredFIRs.length} | Hotspots: {state.hotspots.length}
-        </p>
-      </header>
-
-      {state.error && (
-        <div className="error-banner">
-          <strong>Error:</strong> {state.error}
-        </div>
-      )}
-
-      <main className="app-main">
-        {/* Control Panel */}
-        <section className="control-panel">
-          <h2>Data & Filters</h2>
-
-          {/* File Upload */}
-          <div className="file-upload">
-            <label>Upload FIR Data (CSV):</label>
-            <input
-              type="file"
-              accept=".csv"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) handleFileUpload(file);
-              }}
+    <Router>
+      <div className="app-layout">
+        <NavigationBar />
+        <main className="main-content">
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <DashboardPage
+                  allFIRs={state.allFIRs}
+                  filteredFIRs={state.filteredFIRs}
+                  hotspots={state.hotspots}
+                  filters={state.filters}
+                  searchQuery={state.searchQuery}
+                  error={state.error}
+                  onFileUpload={handleFileUpload}
+                  onFiltersChange={handleFiltersChange}
+                  onSearch={handleSearch}
+                  onResetFilters={handleResetFilters}
+                  onExportCSV={handleExportCSV}
+                />
+              }
             />
-          </div>
-
-          {/* Search */}
-          <div className="search-box">
-            <label>Search:</label>
-            <input
-              type="text"
-              placeholder="Search by ID, area, crime type..."
-              value={state.searchQuery}
-              onChange={(e) => handleSearch(e.target.value)}
+            <Route
+              path="/map"
+              element={
+                <MapPage
+                  filteredFIRs={state.filteredFIRs}
+                  hotspots={state.hotspots}
+                  selectedFIR={selectedFIR}
+                  onFIRSelect={setSelectedFIR}
+                />
+              }
             />
-          </div>
-
-          {/* Filter Buttons */}
-          <div className="filter-actions">
-            <button onClick={handleResetFilters}>Reset Filters</button>
-            <button onClick={handleExportCSV}>Export CSV</button>
-          </div>
-        </section>
-
-        {/* Advanced Filter Panel */}
-        <section className="filter-panel-section">
-          <FilterPanel
-            onFiltersChange={(filters) => {
-              const filtered = filterService.searchAndFilter(
-                state.allFIRs,
-                filters,
-                state.searchQuery
-              );
-              const hotspots = hotspotService.detectHotspots(filtered);
-              setState((s) => ({
-                ...s,
-                filters,
-                filteredFIRs: filtered,
-                hotspots,
-              }));
-            }}
-            onSearch={handleSearch}
-            currentFilters={state.filters}
-            searchQuery={state.searchQuery}
-          />
-        </section>
-
-        {/* Crime Map */}
-        {state.filteredFIRs.length > 0 && (
-          <section className="map-section">
-            <CrimeMap
-              firs={state.filteredFIRs}
-              hotspots={state.hotspots}
-              selectedFIR={selectedFIR}
-              onFIRSelect={setSelectedFIR}
+            <Route
+              path="/analytics"
+              element={
+                <AnalyticsPage
+                  filteredFIRs={state.filteredFIRs}
+                  hotspots={state.hotspots}
+                />
+              }
             />
-          </section>
-        )}
-
-        {/* Analytics Dashboard */}
-        {state.filteredFIRs.length > 0 && (
-          <section className="analytics-section">
-            <AnalyticsPanel
-              insights={insightService.generateInsights(state.filteredFIRs)}
-              hotspots={state.hotspots}
+            <Route
+              path="/hotspots"
+              element={<HotspotsPage hotspots={state.hotspots} />}
             />
-          </section>
-        )}
-
-        {/* Integration Linkage Dashboard */}
-        <section className="integration-section">
-          <IntegrationDashboard />
-        </section>
-
-        {/* Statistics Panel */}
-        <section className="statistics-panel">
-          <h2>Crime Statistics & Insights</h2>
-
-          <div className="stats-grid">
-            <div className="stat-card">
-              <h3>Total FIRs Analyzed</h3>
-              <p className="stat-value">{state.filteredFIRs.length}</p>
-            </div>
-
-            <div className="stat-card">
-              <h3>Total Hotspots</h3>
-              <p className="stat-value">{hotspotStats.totalHotspots}</p>
-            </div>
-
-            <div className="stat-card">
-              <h3>High-Risk Zones</h3>
-              <p className="stat-value" style={{ color: 'red' }}>
-                {hotspotStats.highRisk}
-              </p>
-            </div>
-
-            <div className="stat-card">
-              <h3>Medium-Risk Zones</h3>
-              <p className="stat-value" style={{ color: 'orange' }}>
-                {hotspotStats.mediumRisk}
-              </p>
-            </div>
-          </div>
-
-          {/* Peak Hours */}
-          <div className="insights-section">
-            <h3>Peak Crime Hours</h3>
-            <ul>
-              {insights.peakHours.slice(0, 5).map((hour) => (
-                <li key={hour.hour}>
-                  {hour.hour}:00 - {hour.count} incidents
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Top Crime Types */}
-          <div className="insights-section">
-            <h3>Top Crime Types</h3>
-            <ul>
-              {insights.topCrimeTypes.map((crime) => (
-                <li key={crime.type}>
-                  {crime.type}: {crime.count} incidents
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-
-        {/* Hotspots Panel */}
-        <section className="hotspots-panel">
-          <h2>Crime Hotspots</h2>
-
-          {state.hotspots.length === 0 ? (
-            <p>No hotspots detected. Upload FIR data to analyze.</p>
-          ) : (
-            <div className="hotspots-list">
-              {state.hotspots.map((hotspot) => (
-                <div key={hotspot.zoneId} className={`hotspot-card severity-${hotspot.severity}`}>
-                  <h4>{hotspot.zoneName}</h4>
-                  <p>
-                    <strong>FIR Count:</strong> {hotspot.firCount} ({hotspot.percentage.toFixed(1)}%)
-                  </p>
-                  <p>
-                    <strong>Severity:</strong> <span className={`badge severity-${hotspot.severity}`}>{hotspot.severity.toUpperCase()}</span>
-                  </p>
-                  <p>
-                    <strong>Location:</strong> {hotspot.centerLat.toFixed(4)}, {hotspot.centerLng.toFixed(4)}
-                  </p>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-
-        {/* Data Table */}
-        <section className="data-table-panel">
-          <h2>FIR Records</h2>
-
-          {state.filteredFIRs.length === 0 ? (
-            <p>No records match the current filters.</p>
-          ) : (
-            <table className="fir-table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Crime Type</th>
-                  <th>Date</th>
-                  <th>Time</th>
-                  <th>Area</th>
-                  <th>Zone</th>
-                  <th>Police Station</th>
-                </tr>
-              </thead>
-              <tbody>
-                {state.filteredFIRs.slice(0, 20).map((fir) => (
-                  <tr key={fir.id}>
-                    <td>{fir.id}</td>
-                    <td>{fir.crimeType}</td>
-                    <td>{fir.date.toLocaleDateString()}</td>
-                    <td>{fir.time}</td>
-                    <td>{fir.area}</td>
-                    <td>{fir.zone}</td>
-                    <td>{fir.policeStation}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-
-          {state.filteredFIRs.length > 20 && (
-            <p className="table-note">
-              Showing 20 of {state.filteredFIRs.length} records. Export to see all.
-            </p>
-          )}
-        </section>
-      </main>
-
-      <footer className="app-footer">
-        <p>
-          SafeCity MVP v0.1.0 | Data-Driven Crime Mapping &amp; Patrol Decision
-          Support
-        </p>
-      </footer>
-    </div>
+            <Route
+              path="/data"
+              element={<DataTablePage filteredFIRs={state.filteredFIRs} />}
+            />
+            <Route path="/integration" element={<IntegrationPage />} />
+          </Routes>
+        </main>
+      </div>
+    </Router>
   );
 };
 
