@@ -1,0 +1,52 @@
+.navbar-brand {
+    font-weight: bold;
+    font-size: 24px;
+}
+
+#map {
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.safety-score {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.incident-report {
+    border: 1px solid #dee2e6;
+    transition: all 0.3s ease;
+}
+
+.incident-report:hover {
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    border: none;
+}
+
+.btn-warning {
+    background: linear-gradient(45deg, #ffc107, #ff9800);
+    border: none;
+    color: white;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+    border-color: #80bdff;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}

@@ -1,0 +1,12 @@
+Flask
+flask-sqlalchemy
+opencv-python
+numpy
+pandas
+scikit-learn
+geopy
+folium
+requests
+python-dotenv
+flask-login
+bcrypt
